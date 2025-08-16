@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Chismógrafo — Blog de Chismes</title>
+  <style>
+    :root{
+      --bg:#0f1115;--panel:#151924;--muted:#8892a6;--text:#e6e9ef;--brand:#8b5cf6;--brand-2:#22d3ee;--ok:#22c55e;--warn:#f59e0b;--danger:#ef4444;--chip:#23283a;--stroke:#23283a;--card:#111520;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Inter,Arial,sans-serif;
+      background: radial-gradient(1000px 600px at 10% -10%,rgba(139,92,246,.15),transparent),
+                  radial-gradient(800px 500px at 100% 10%,rgba(34,211,238,.12),transparent),
+                  var(--bg);
+      color:var(--text);
+      line-height:1.6;
+    }
+    .wrap{max-width:1100px;margin:0 auto;padding:24px}
+    header{
+      display:flex;align-items:center;gap:16px;justify-content:space-between;
+      padding:12px 0 24px;border-bottom:1px solid var(--stroke)
+    }
+    .logo{display:flex;gap:12px;align-items:center}
+    .badge{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-weight:700;
+      background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#0b1020;box-shadow:0 8px 30px rgba(139,92,246,.25)}
+    h1{margin:0;font-size:clamp(20px,3vw,28px)}
+    .user{
+      display:flex;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--stroke);
+      padding:8px 12px;border-radius:16px
+    }
+    .avatar{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:#22283a;color:#9da7bd;font-weight:700}
+    .muted{color:var(--muted)}
+
+    /* Tabs (CSS-only via radio) */
+    .tabs{margin-top:18px}
+    .tabs > input{display:none}
+    .tabbar{display:flex;gap:8px;flex-wrap:wrap}
+    .tabbar label{
+      cursor:pointer;padding:10px 14px;border-radius:12px;border:1px solid var(--stroke);
+      background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,0));
+      transition:transform .15s ease, border-color .15s ease, background .2s ease
+    }
+    .tabbar label:hover{transform:translateY(-1px);border-color:#2b3350}
+    #tab-all:checked ~ .tabbar label[for="tab-all"],
+    #tab-mine:checked ~ .tabbar label[for="tab-mine"],
+    #tab-new:checked ~ .tabbar label[for="tab-new"]{
+      background:linear-gradient(135deg,rgba(139,92,246,.18),rgba(34,211,238,.14));
+      border-color:transparent;box-shadow:0 6px 22px rgba(139,92,246,.18) inset
+    }
+
+    .panes{margin-top:16px}
+    .pane{display:none}
+    #tab-all:checked ~ .panes #pane-all,
+    #tab-mine:checked ~ .panes #pane-mine,
+    #tab-new:checked ~ .panes #pane-new{display:block}
+
+    /* Cards */
+    .feed{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
+    .card{
+      grid-column:span 12;background:var(--panel);border:1px solid var(--stroke);border-radius:18px;overflow:hidden;
+      box-shadow:0 10px 30px rgba(0,0,0,.2)
+    }
+    @media (min-width:720px){.card{grid-column:span 6}}
+    @media (min-width:1024px){.card{grid-column:span 4}}
+    .card .head{display:flex;gap:12px;padding:14px;border-bottom:1px solid var(--stroke);align-items:center}
+    .head .a{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:#23283a;color:#aeb6cc;font-weight:700}
+    .head .meta{display:flex;flex-direction:column}
+    .head .meta b{font-size:14px}
+    .head .meta span{font-size:12px;color:var(--muted)}
+    .card .body{padding:14px 14px 4px}
+    .title{font-weight:700;margin:0 0 6px;font-size:16px}
+    .seen{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+    .chip{
+      display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:var(--chip);
+      color:#b6c0d8;border:1px solid var(--stroke);font-size:12px
+    }
+    .chip .dot{width:8px;height:8px;border-radius:50%;background:var(--ok)}
+    .chip.warn .dot{background:var(--warn)}
+
+    /* Pane: Mine */
+    .mine-header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:8px}
+    .stat{display:flex;gap:10px;align-items:center;padding:8px 12px;border-radius:12px;background:#101522;border:1px solid var(--stroke)}
+
+    /* Form */
+    .form{
+      display:grid;gap:12px;max-width:720px;background:var(--panel);padding:16px;border:1px solid var(--stroke);border-radius:18px
+    }
+    .row{display:grid;gap:6px}
+    .row label{font-size:14px;color:#bfc7de}
+    input[type="text"], textarea{
+      width:100%;padding:12px 14px;border-radius:12px;border:1px solid #2a3148;background:#0f1422;color:var(--text);
+      outline:none
+    }
+    textarea{min-height:140px;resize:vertical}
+    .actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .btn{
+      appearance:none;border:none;cursor:pointer;padding:10px 14px;border-radius:12px;font-weight:700
+    }
+    .btn.primary{background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#0b1020}
+    .btn.ghost{background:transparent;border:1px dashed #2d3550;color:#9fb2ff}
+    .hint{color:var(--muted);font-size:13px}
+
+    /* Fake success (CSS-only, uses :target) */
+    #ok{display:none}
+    #ok:target{display:block;margin-top:12px;padding:10px 12px;border-radius:12px;background:#0f1b14;border:1px solid #1d3d2b;color:#b7e4c7}
+
+    footer{margin:40px 0 16px;color:var(--muted);font-size:13px;text-align:center}
+    .inline{display:inline}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo">
+        <div class="badge">C</div>
+        <h1>Chismógrafo <span class="muted">· Blog de chismes e historias</span></h1>
+      </div>
+      <div class="user">
+        <div class="avatar">AH</div>
+        <div>
+          <div><strong>Alexander Herrera</strong></div>
+          <div class="muted" style="font-size:12px">@alex_h</div>
+        </div>
+      </div>
+    </header>
+
+    <section class="tabs">
+      <input type="radio" name="tabs" id="tab-all" checked>
+      <input type="radio" name="tabs" id="tab-mine">
+      <input type="radio" name="tabs" id="tab-new">
+
+      <nav class="tabbar">
+        <label for="tab-all">📣 Todos los chismes</label>
+        <label for="tab-mine">🧑‍💻 Mis chismes</label>
+        <label for="tab-new">✍️ Crear chisme</label>
+      </nav>
+
+      <div class="panes">
+        <!-- PANE: ALL -->
+        <section id="pane-all" class="pane">
+          <div class="feed">
+            <!-- Card 1 -->
+            <article class="card">
+              <div class="head">
+                <div class="a">LM</div>
+                <div class="meta">
+                  <b>Luisa Martínez</b>
+                  <span>Publicó hace 2 h · Zona 1, GUA</span>
+                </div>
+              </div>
+              <div class="body">
+                <h3 class="title">El café de la esquina ya no acepta efectivo ☕</h3>
+                <p>Ahora todo es con QR. Dicen que es por seguridad, pero yo vi a Don Chepe peleando con el POS media hora 😂.</p>
+                <div class="seen">
+                  <span class="chip"><span class="dot"></span> 23 vistas</span>
+                  <span class="chip warn"><span class="dot"></span> 5 comentarios</span>
+                </div>
+              </div>
+            </article>
+
+            <!-- Card 2 -->
+            <article class="card">
+              <div class="head">
+                <div class="a">CR</div>
+                <div class="meta">
+                  <b>Carlos Ruiz</b>
+                  <span>Publicó ayer · Mixco</span>
+                </div>
+              </div>
+              <div class="body">
+                <h3 class="title">El profe subió el examen… ¡con las respuestas! 😱</h3>
+                <p>Lo bajó a los 10 minutos, pero medio salón lo descargó. Mañana todos “genios”.</p>
+                <div class="seen">
+                  <span class="chip"><span class="dot"></span> 81 vistas</span>
+                  <span class="chip warn"><span class="dot"></span> 12 comentarios</span>
+                </div>
+              </div>
+            </article>
+
+            <!-- Card 3 -->
+            <article class="card">
+              <div class="head">
+                <div class="a">AH</div>
+                <div class="meta">
+                  <b>Alexander Herrera</b>
+                  <span>Publicó hace 3 días · Guatemala</span>
+                </div>
+              </div>
+              <div class="body">
+                <h3 class="title">El cajero del súper dejó una caja de donas en la salida 🍩</h3>
+                <p>“Para los valientes”, decía el letrero. ¡Duraron 4 minutos!</p>
+                <div class="seen">
+                  <span class="chip"><span class="dot"></span> 46 vistas</span>
+                  <span class="chip warn"><span class="dot"></span> 9 comentarios</span>
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <!-- PANE: MINE -->
+        <section id="pane-mine" class="pane">
+          <div class="mine-header">
+            <h2 style="margin:0">Tus publicaciones</h2>
+            <div class="stat">👀 Total vistas: <strong> 120 </strong></div>
+          </div>
+
+          <div class="feed">
+            <article class="card">
+              <div class="head">
+                <div class="a">AH</div>
+                <div class="meta">
+                  <b>Alexander Herrera</b>
+                  <span>Publicado el 10 ago 2025</span>
+                </div>
+              </div>
+              <div class="body">
+                <h3 class="title">Chisme secreto del laboratorio 🤫</h3>
+                <p>Dicen que el servidor tiene un ventilador amarrado con cinchos desde 2020 y todavía aguanta.</p>
+                <div class="seen">
+                  <span class="chip"><span class="dot"></span> 74 vistas</span>
+                  <span class="chip warn"><span class="dot"></span> Visto por: Luisa, Carlos, Mar, Tania…</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="card">
+              <div class="head">
+                <div class="a">AH</div>
+                <div class="meta">
+                  <b>Alexander Herrera</b>
+                  <span>Publicado el 05 ago 2025</span>
+                </div>
+              </div>
+              <div class="body">
+                <h3 class="title">La copiadora revive si la golpeas suave 😅</h3>
+                <p>Ingeniería inversa: tres palmadas laterales + abrir y cerrar la tapa una vez.</p>
+                <div class="seen">
+                  <span class="chip"><span class="dot"></span> 46 vistas</span>
+                  <span class="chip warn"><span class="dot"></span> Visto por: Diego, Sofi, Memo…</span>
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <!-- PANE: NEW -->
+        <section id="pane-new" class="pane">
+          <h2 style="margin-top:0">Crea un nuevo chisme</h2>
+          <form class="form" action="#ok" method="get">
+            <div class="row">
+              <label for="user">Nombre de usuario</label>
+              <input id="user" type="text" placeholder="Ej. Ana López" required>
+            </div>
+            <div class="row">
+              <label for="title">Título del chisme</label>
+              <input id="title" type="text" placeholder="Ponle un título llamativo" required>
+            </div>
+            <div class="row">
+              <label for="content">Contenido</label>
+              <textarea id="content" placeholder="Cuenta el chisme/historia con detalles…" required></textarea>
+            </div>
+            <div class="actions">
+              <button class="btn primary" type="submit">Publicar</button>
+              <button class="btn ghost" type="reset">Limpiar</button>
+              <span class="hint">* Demo HTML/CSS puro: el envío muestra un aviso visual, no guarda datos.</span>
+            </div>
+          </form>
+          <div id="ok">✅ Tu chisme fue “publicado” (demo). Para hacerlo real se necesita JavaScript y/o backend.</div>
+        </section>
+      </div>
+    </section>
+
+    <footer>
+      Hecho con HTML + CSS puro. <span class="inline">Para versión funcional: añadir JS para manejar estado y un backend (por ejemplo Flask o Node) para guardar y contar vistas.</span>
+    </footer>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>
