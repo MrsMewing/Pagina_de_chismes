@@ -109,6 +109,19 @@
 
     footer{margin:40px 0 16px;color:var(--muted);font-size:13px;text-align:center}
     .inline{display:inline}
+
+    /* Modal */
+    .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:1000}
+    .modal{background:var(--panel);padding:24px;border-radius:18px;max-width:360px;width:90%;border:1px solid var(--stroke);box-shadow:0 10px 30px rgba(0,0,0,.5)}
+    .modal h2{margin-top:0;margin-bottom:16px;font-size:20px}
+    .modal .row{display:grid;gap:6px;margin-bottom:14px}
+    .modal label{font-size:14px;color:#bfc7de}
+    .modal input{padding:10px;border-radius:12px;border:1px solid #2a3148;background:#0f1422;color:var(--text);outline:none}
+    .actions{display:flex;gap:10px;justify-content:flex-end;margin-top:10px}
+    .btn{padding:10px 14px;border-radius:12px;font-weight:700;border:none;cursor:pointer}
+    .btn.primary{background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#0b1020}
+    .btn.ghost{background:transparent;border:1px dashed #2d3550;color:#9fb2ff}
+    .modal-backdrop.show{display:flex}
   </style>
 </head>
 <body>
@@ -277,6 +290,25 @@
     <footer>
       Hecho con HTML + CSS puro. <span class="inline">Para versión funcional: añadir JS para manejar estado y un backend (por ejemplo Flask o Node) para guardar y contar vistas.</span>
     </footer>
+  </div>
+
+  <!-- MODAL -->
+  <div class="modal-backdrop" id="loginModal">
+    <div class="modal">
+      <h2>Acceso al Chismógrafo</h2>
+      <div class="row">
+        <label for="username">Usuario</label>
+        <input type="text" id="username" placeholder="Escribe tu nombre">
+      </div>
+      <div class="row">
+        <label for="password">Contraseña</label>
+        <input type="password" id="password" placeholder="Escribe tu contraseña">
+      </div>
+      <div class="actions">
+        <button class="btn ghost" id="closeLogin">Cancelar</button>
+        <button class="btn primary" id="submitLogin">Entrar</button>
+      </div>
+    </div>
   </div>
 
   <script src="main.js"></script>
